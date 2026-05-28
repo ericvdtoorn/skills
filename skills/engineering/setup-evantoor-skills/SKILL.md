@@ -149,7 +149,7 @@ Walk the user through three steps. Skip cleanly when the answer is "already done
            "hooks": [
              {
                "type": "command",
-               "command": "jq -c '.tool_input.command = \"eval \\\"$(mise activate bash)\\\" 2>/dev/null; \" + .tool_input.command'"
+               "command": "jq -c '.tool_input.command = \"eval \\\"$(mise activate bash)\\\" 2>/dev/null; \" + (.tool_input.command // \"\")'"
              }
            ]
          }
