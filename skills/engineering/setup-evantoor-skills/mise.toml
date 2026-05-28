@@ -1,0 +1,23 @@
+# Seed `.mise.toml` for repos set up by /setup-evantoor-skills.
+# Copy this file to the repo root as `.mise.toml`, then `mise install` and `mise trust`.
+
+[tools]
+# JS runtime + package manager
+bun = "latest"
+# Python + uv for deps. uv brings its own python; pinning here keeps versions explicit.
+python = "3.12"
+uv = "latest"
+# Node is only needed for tools that don't run under bun (e.g. some CLIs).
+# Uncomment if the project actually needs it:
+# node = "lts"
+
+[settings]
+experimental = true
+
+[task_config]
+# File tasks live under `mise/tasks/`, not the mise default (`.mise/tasks/`).
+# This keeps the agent-visible task surface in one obvious place at the repo root.
+includes = ["mise/tasks"]
+
+# [env] — uncomment to declare project-wide env vars
+# NODE_ENV = "development"

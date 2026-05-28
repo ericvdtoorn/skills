@@ -69,50 +69,105 @@ Confirm the layout:
 
 **Section D — Overlap check.**
 
-> Explainer: Other plugins (notably `superpowers`, but also some custom skills people install globally) ship skills that overlap with evantoor's: `superpowers:test-driven-development` overlaps `tdd`, `superpowers:systematic-debugging` overlaps `diagnose`, `superpowers:brainstorming` overlaps `grill-me`/`grill-with-docs`, `superpowers:writing-skills` overlaps `write-a-skill`. When two skills cover the same ground the agent picks one at random, which makes behaviour inconsistent across sessions. The fix is to pick a winner per overlap and disable or deprioritise the other locally for this repo.
+> Explainer: Other skill packs (notably `superpowers`, but also some custom packs people install globally) ship skills that overlap with evantoor's: superpowers ships test-driven-development, systematic-debugging, brainstorming, writing-skills, writing-plans, executing-plans — each of which covers ground that one of evantoor's skills also covers (`tdd`, `diagnose`, `grill-me`/`grill-with-docs`, `write-a-skill`, `to-prd`, `handoff`). When two skills cover the same ground the agent picks one at random, which makes behaviour inconsistent across sessions. The fix is to pick **one pack** as the winner for the overlapping area and keep that pack whole.
 
-Detect overlaps by inspecting **only** what's actually loaded right now — read the `available skills` and `MCP` blocks from your own current session context. Do not invent overlaps from training data or guess at skills the user might have installed. If you can't see a skill in your context, treat it as not installed.
+**Choose at the pack level, not the skill level.** Each pack is internally consistent — its skills reference and call into each other (e.g. superpowers' brainstorming → writing-plans → executing-plans → requesting-code-review forms a chain). Cherry-picking individual skills across packs breaks those chains. Pick which pack owns the overlapping area and disable the other in that area as a whole.
 
-Compare against the evantoor skill list and surface concrete matches:
+Detect overlaps by inspecting **only** what's actually loaded right now — read the `available skills` and `MCP` blocks from your own current session context. Do not invent overlaps from training data or guess at skills the user might have installed. If you can't see a pack in your context, treat it as not installed.
 
-| Evantoor skill | Known overlapping skills (examples) |
-| --- | --- |
-| `tdd` | `superpowers:test-driven-development` |
-| `diagnose` | `superpowers:systematic-debugging` |
-| `grill-me` / `grill-with-docs` | `superpowers:brainstorming` |
-| `write-a-skill` | `superpowers:writing-skills` |
-| `to-prd` | `superpowers:writing-plans` (partial — plans vs. PRDs) |
-| `handoff` | `superpowers:executing-plans` (partial — same handoff seam) |
+Group the detected overlaps by source pack and present each pack as a single decision:
 
-For each overlap detected, present it to the user like:
+| Pack | Skills that overlap with evantoor | Default |
+| --- | --- | --- |
+| `superpowers` | `test-driven-development` (vs `tdd`), `systematic-debugging` (vs `diagnose`), `brainstorming` (vs `grill-me`/`grill-with-docs`), `writing-skills` (vs `write-a-skill`), `writing-plans` (vs `to-prd`), `executing-plans` (vs `handoff`) | keep `evantoor` for this area |
+| `<other pack>` | …list detected overlaps… | keep `evantoor` |
 
-> Found overlap: `superpowers:test-driven-development` covers the same ground as evantoor's `tdd`. Default: prefer evantoor's `tdd`. [keep evantoor / keep superpowers / keep both]
+Present the choice to the user like:
 
-Default is **prefer evantoor** (the user installed this pack on purpose). "Keep both" is offered but discouraged — call out that it tends to produce inconsistent behaviour.
+> Found overlap with the `superpowers` pack — it ships 6 skills covering the same ground as evantoor's `tdd`, `diagnose`, `grill-*`, `write-a-skill`, `to-prd`, and `handoff`. Pick one pack to own this area:
+> - **Keep evantoor** (default) — disable superpowers' overlapping skills locally; superpowers' non-overlapping skills stay active
+> - **Keep superpowers** — leave superpowers active and skip writing the preferred-skills hint
+> - **Keep both** (discouraged) — leads to inconsistent behaviour across sessions
+
+Default is **keep evantoor** (the user installed this pack on purpose). "Keep both" is offered but called out as discouraged.
+
+Only present a decision for packs that actually have overlaps. A pack with zero overlaps is left alone.
 
 **Apply the user's choices in two layers:**
 
 1. **Hard disable via settings.json** (when supported by the host plugin's disable mechanism). Project-local `.claude/settings.local.json` is preferred so the choice doesn't leak to other repos. Common shapes:
-   - Whole plugin disable: `"enabledPlugins": { "<plugin-name>": false }`
-   - Individual skill disable: `"disabledSkills": ["<skill-id>"]` (if the harness supports it)
+   - Whole pack disable: `"enabledPlugins": { "<plugin-name>": false }` (cleanest when the user wants the entire pack off)
+   - Per-skill disable inside a pack: `"disabledSkills": ["<plugin>:<skill>", …]` (if the harness supports it) — use this when only the *overlapping* skills should go, leaving the rest of the pack live
    - If unsure of the exact key, **ask the user to confirm before writing** rather than guessing — settings.json is shared across sessions and a wrong key silently does nothing.
-2. **Soft preference via AGENTS.md/CLAUDE.md.** Always write a `### Preferred skills` subsection under `## Agent skills` listing the chosen winners. This works regardless of whether the hard-disable mechanism is available, and gives Claude a clear instruction at session start.
+2. **Soft preference via AGENTS.md/CLAUDE.md.** Always write a `### Preferred skills` subsection under `## Agent skills` naming the winning pack for each overlapping area. This works regardless of whether the hard-disable mechanism is available, and gives Claude a clear instruction at session start.
 
 The `### Preferred skills` block:
 
 ```markdown
 ### Preferred skills
 
-When skills overlap, prefer the evantoor variant:
+When skills overlap, prefer the `evantoor` pack over `<other pack>` for these areas:
 
-- `tdd` over `superpowers:test-driven-development`
-- `diagnose` over `superpowers:systematic-debugging`
-- …
+- TDD / red-green-refactor → `evantoor:tdd`
+- Debugging / bug diagnosis → `evantoor:diagnose`
+- Brainstorming / spec interviews → `evantoor:grill-me` and `evantoor:grill-with-docs`
+- Writing skills → `evantoor:write-a-skill`
+- PRDs / plans → `evantoor:to-prd`
+- Handoff between sessions → `evantoor:handoff`
 ```
 
-Only list overlaps that were actually detected — don't enumerate hypothetical conflicts.
+Only list areas where an overlap was actually detected — don't enumerate hypothetical conflicts.
 
 After applying, **note to the user** exactly what was disabled and where (file path + key), so they can roll it back if they change their mind.
+
+**Section E — Tooling.**
+
+> Explainer: evantoor's convention is one tool manager (mise) plus one package manager per ecosystem (bun for JS, uv for Python). Tasks are file tasks under `mise/tasks/`, and every task writes its full output to `mise/logs/<task>.log` with a footer that names the log path — so when an agent's tool-result buffer truncates, the agent still knows where to read the rest. This section sets up that scaffolding and tells future sessions about it.
+
+Walk the user through three steps. Skip cleanly when the answer is "already done" (don't overwrite existing files).
+
+1. **Pick which ecosystems to wire up.** Ask the user which of `bun`, `uv` / `python`, `node` they want pinned in `.mise.toml`. Default: bun + uv + python. Drop any they say they don't need.
+
+2. **Write or update `.mise.toml`.** Use [mise.toml](./mise.toml) as the seed. If `.mise.toml` already exists, merge — don't clobber the user's existing `[tools]` or `[env]` blocks. Always ensure `[task_config]` includes `mise/tasks` so file tasks under that path are discoverable.
+
+3. **Create the task + log scaffolding** (idempotent — skip files that already exist):
+   - `mise/tasks/` directory
+   - `mise/tasks/.gitkeep`
+   - `mise/logs/` directory
+   - `mise/logs/.gitignore` containing `*.log` (and a `!.gitignore` line so the gitignore itself stays tracked)
+   - `mise/tasks/example` copied from [task-template.sh](./task-template.sh), renamed (no `.sh` extension is fine — mise picks up both forms) and `chmod +x`. Leave it as a no-op example the user can delete; don't try to infer what their real first task should be.
+   - `docs/agents/tooling.md` copied from [tooling.md](./tooling.md). This is what `mise-tasks` and other skills read to know the conventions.
+
+4. **Wire the reminder hook.** Add a `SessionStart` hook to `.claude/settings.local.json` that injects a one-line reminder into the agent's context every session, so the agent doesn't have to remember the mise convention on its own:
+
+   ```json
+   {
+     "hooks": {
+       "SessionStart": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "echo 'TOOLING: This repo uses mise. Prefer `mise run <task>`; for ad-hoc commands use `mise exec -- <cmd>`. Task logs live in mise/logs/<task>.log. See docs/agents/tooling.md.'"
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+
+   If `.claude/settings.local.json` already exists, merge the hook in rather than replacing the file. If a `SessionStart` hook is already there with a different command, append rather than overwrite — don't silently drop the user's prior hook.
+
+5. **Append to the `## Agent skills` block** in CLAUDE.md / AGENTS.md:
+
+   ```markdown
+   ### Tooling
+
+   mise + bun + uv. Tasks live in `mise/tasks/`, logs in `mise/logs/<task>.log`. See `docs/agents/tooling.md`. Author new tasks via the `mise-tasks` skill.
+   ```
+
+6. **Tell the user what was done** — list the files created (`.mise.toml`, `mise/tasks/`, `mise/logs/`, `docs/agents/tooling.md`, `.claude/settings.local.json` hook) and remind them to run `mise install && mise trust` once.
 
 ### 3. Confirm and edit
 
@@ -152,18 +207,25 @@ The block:
 
 [one-line summary of layout — "single-context" or "multi-context"]. See `docs/agents/domain.md`.
 
+### Tooling
+
+mise + [list ecosystems pinned, e.g. bun + uv]. Tasks live in `mise/tasks/`, logs in `mise/logs/<task>.log`. See `docs/agents/tooling.md`. Author new tasks via the `mise-tasks` skill.
+
 ### Preferred skills
 
 [only present if overlaps were detected in step 2 — see Section D for format]
 ```
 
-Then write the three docs files using the seed templates in this skill folder as a starting point:
+Then write the docs files using the seed templates in this skill folder as a starting point:
 
 - [issue-tracker-github.md](./issue-tracker-github.md) — GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md) — GitLab issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md) — local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md) — label mapping
 - [domain.md](./domain.md) — domain doc consumer rules + layout
+- [tooling.md](./tooling.md) — mise + bun + uv conventions
+- [mise.toml](./mise.toml) — seed `.mise.toml`
+- [task-template.sh](./task-template.sh) — seed file task (logging + tail pattern)
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
