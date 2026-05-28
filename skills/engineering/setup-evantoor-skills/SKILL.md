@@ -122,7 +122,7 @@ After applying, **note to the user** exactly what was disabled and where (file p
 
 **Section E — Tooling.**
 
-> Explainer: evantoor's convention is one tool manager (mise) plus one package manager per ecosystem (bun for JS, uv for Python). Tasks are file tasks under `mise/tasks/`, and every task writes its full output to `mise/logs/<task>.log` with a footer that names the log path — so when an agent's tool-result buffer truncates, the agent still knows where to read the rest. This section sets up that scaffolding and tells future sessions about it.
+> Explainer: evantoor's convention is one tool manager (mise) plus one package manager per ecosystem (bun for JS, uv for Python). Tasks are file tasks under `mise/tasks/`, and every task writes its full output to `mise/logs/<task>.log` with a footer that names the log path — so when an agent's tool-result buffer truncates, the agent still knows where to read the rest. A `PreToolUse` hook on Bash auto-activates mise for every command, so the agent doesn't have to remember to prefix things with `mise exec --`. This section sets up that scaffolding and tells future sessions about it.
 
 Walk the user through three steps. Skip cleanly when the answer is "already done" (don't overwrite existing files).
 
@@ -138,17 +138,18 @@ Walk the user through three steps. Skip cleanly when the answer is "already done
    - `mise/tasks/example` copied from [task-template.sh](./task-template.sh), renamed (no `.sh` extension is fine — mise picks up both forms) and `chmod +x`. Leave it as a no-op example the user can delete; don't try to infer what their real first task should be.
    - `docs/agents/tooling.md` copied from [tooling.md](./tooling.md). This is what `mise-tasks` and other skills read to know the conventions.
 
-4. **Wire the reminder hook.** Add a `SessionStart` hook to `.claude/settings.local.json` that injects a one-line reminder into the agent's context every session, so the agent doesn't have to remember the mise convention on its own:
+4. **Wire the mise-activation hook.** Add a `PreToolUse` hook on `Bash` to `.claude/settings.local.json` that prepends `eval "$(mise activate bash)"` to every Bash command. This way the agent never has to remember to use `mise exec --` — the mise PATH is already active in the subshell that runs the command:
 
    ```json
    {
      "hooks": {
-       "SessionStart": [
+       "PreToolUse": [
          {
+           "matcher": "Bash",
            "hooks": [
              {
                "type": "command",
-               "command": "echo 'TOOLING: This repo uses mise. Prefer `mise run <task>`; for ad-hoc commands use `mise exec -- <cmd>`. Task logs live in mise/logs/<task>.log. See docs/agents/tooling.md.'"
+               "command": "jq -c '.tool_input.command = \"eval \\\"$(mise activate bash)\\\" 2>/dev/null; \" + .tool_input.command'"
              }
            ]
          }
@@ -157,7 +158,12 @@ Walk the user through three steps. Skip cleanly when the answer is "already done
    }
    ```
 
-   If `.claude/settings.local.json` already exists, merge the hook in rather than replacing the file. If a `SessionStart` hook is already there with a different command, append rather than overwrite — don't silently drop the user's prior hook.
+   The hook reads the PreToolUse JSON from stdin and writes back a modified version with the activation prepended. `2>/dev/null` swallows any `mise activate` chatter (e.g. trust prompts on first run — handled separately by telling the user to `mise trust` once after setup).
+
+   Notes:
+   - Prepending is safe even if the command already uses `mise exec --` or `mise run`; the activation is idempotent.
+   - This requires `jq` to be on PATH. If the user doesn't have it (uncommon on macOS/Linux dev machines), fall back to a small shell script under `.claude/hooks/mise-activate.sh` that does the same rewrite with `sed`/`awk` — but ask the user first; don't ship a fallback they didn't agree to.
+   - If `.claude/settings.local.json` already exists, merge the hook in rather than replacing the file. If a `PreToolUse`/`Bash` hook is already there, append this one in the same `hooks` array rather than overwriting.
 
 5. **Append to the `## Agent skills` block** in CLAUDE.md / AGENTS.md:
 
