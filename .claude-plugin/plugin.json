@@ -2,6 +2,7 @@
   "name": "evantoor-skills",
   "skills": [
     "./skills/engineering/diagnose",
+    "./skills/engineering/gitmoji-commits",
     "./skills/engineering/grill-with-docs",
     "./skills/engineering/triage",
     "./skills/engineering/improve-codebase-architecture",

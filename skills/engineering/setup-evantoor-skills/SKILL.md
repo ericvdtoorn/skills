@@ -175,6 +175,22 @@ Walk the user through three steps. Skip cleanly when the answer is "already done
 
 6. **Tell the user what was done** — list the files created (`.mise.toml`, `mise/tasks/`, `mise/logs/`, `docs/agents/tooling.md`, `.claude/settings.local.json` hook) and remind them to run `mise install && mise trust` once.
 
+**Section F — Git commit format.**
+
+> Explainer: evantoor's convention is single-line commits prefixed with a gitmoji, one functional purpose per commit. The `gitmoji-commits` skill has the full reference (emoji table, examples, isolation rule). This section just wires the convention into the repo so agents follow it.
+
+1. **Check for an existing convention.** Look at the last 20 commits (`git log --oneline -20`). If the repo already uses Conventional Commits (`feat:`, `fix:`, …) or another well-established convention, **ask the user** before overriding — they may want to keep the existing one for consistency with co-maintainers.
+
+2. **Append to the `## Agent skills` block** in CLAUDE.md / AGENTS.md:
+
+   ```markdown
+   ### Git commits
+
+   Single-line commits prefixed with a gitmoji, one functional purpose per commit. No body. No trailers unless the user asks. See the `gitmoji-commits` skill for the emoji table and examples.
+   ```
+
+3. **Optionally** offer to install a `commit-msg` hook that rejects messages without a leading emoji + one-line subject. Default: don't install — most repos don't need enforcement. Only install if the user explicitly asks.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
@@ -216,6 +232,10 @@ The block:
 ### Tooling
 
 mise + [list ecosystems pinned, e.g. bun + uv]. Tasks live in `mise/tasks/`, logs in `mise/logs/<task>.log`. See `docs/agents/tooling.md`. Author new tasks via the `mise-tasks` skill.
+
+### Git commits
+
+Single-line commits prefixed with a gitmoji, one functional purpose per commit. No body. No trailers unless the user asks. See the `gitmoji-commits` skill.
 
 ### Preferred skills
 
