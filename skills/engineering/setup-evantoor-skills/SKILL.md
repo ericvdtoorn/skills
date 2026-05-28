@@ -1,10 +1,10 @@
 ---
-name: setup-matt-pocock-skills
-description: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
+name: setup-evantoor-skills
+description: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Also detects overlapping skills from other plugins (e.g. superpowers) and records local preferences. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
 disable-model-invocation: true
 ---
 
-# Setup Matt Pocock's Skills
+# Setup Evantoor's Skills
 
 Scaffold the per-repo configuration that the engineering skills assume:
 
@@ -67,6 +67,53 @@ Confirm the layout:
 - **Single-context** — one `CONTEXT.md` + `docs/adr/` at the repo root. Most repos are this.
 - **Multi-context** — `CONTEXT-MAP.md` at the root pointing to per-context `CONTEXT.md` files (typically a monorepo).
 
+**Section D — Overlap check.**
+
+> Explainer: Other plugins (notably `superpowers`, but also some custom skills people install globally) ship skills that overlap with evantoor's: `superpowers:test-driven-development` overlaps `tdd`, `superpowers:systematic-debugging` overlaps `diagnose`, `superpowers:brainstorming` overlaps `grill-me`/`grill-with-docs`, `superpowers:writing-skills` overlaps `write-a-skill`. When two skills cover the same ground the agent picks one at random, which makes behaviour inconsistent across sessions. The fix is to pick a winner per overlap and disable or deprioritise the other locally for this repo.
+
+Detect overlaps by inspecting **only** what's actually loaded right now — read the `available skills` and `MCP` blocks from your own current session context. Do not invent overlaps from training data or guess at skills the user might have installed. If you can't see a skill in your context, treat it as not installed.
+
+Compare against the evantoor skill list and surface concrete matches:
+
+| Evantoor skill | Known overlapping skills (examples) |
+| --- | --- |
+| `tdd` | `superpowers:test-driven-development` |
+| `diagnose` | `superpowers:systematic-debugging` |
+| `grill-me` / `grill-with-docs` | `superpowers:brainstorming` |
+| `write-a-skill` | `superpowers:writing-skills` |
+| `to-prd` | `superpowers:writing-plans` (partial — plans vs. PRDs) |
+| `handoff` | `superpowers:executing-plans` (partial — same handoff seam) |
+
+For each overlap detected, present it to the user like:
+
+> Found overlap: `superpowers:test-driven-development` covers the same ground as evantoor's `tdd`. Default: prefer evantoor's `tdd`. [keep evantoor / keep superpowers / keep both]
+
+Default is **prefer evantoor** (the user installed this pack on purpose). "Keep both" is offered but discouraged — call out that it tends to produce inconsistent behaviour.
+
+**Apply the user's choices in two layers:**
+
+1. **Hard disable via settings.json** (when supported by the host plugin's disable mechanism). Project-local `.claude/settings.local.json` is preferred so the choice doesn't leak to other repos. Common shapes:
+   - Whole plugin disable: `"enabledPlugins": { "<plugin-name>": false }`
+   - Individual skill disable: `"disabledSkills": ["<skill-id>"]` (if the harness supports it)
+   - If unsure of the exact key, **ask the user to confirm before writing** rather than guessing — settings.json is shared across sessions and a wrong key silently does nothing.
+2. **Soft preference via AGENTS.md/CLAUDE.md.** Always write a `### Preferred skills` subsection under `## Agent skills` listing the chosen winners. This works regardless of whether the hard-disable mechanism is available, and gives Claude a clear instruction at session start.
+
+The `### Preferred skills` block:
+
+```markdown
+### Preferred skills
+
+When skills overlap, prefer the evantoor variant:
+
+- `tdd` over `superpowers:test-driven-development`
+- `diagnose` over `superpowers:systematic-debugging`
+- …
+```
+
+Only list overlaps that were actually detected — don't enumerate hypothetical conflicts.
+
+After applying, **note to the user** exactly what was disabled and where (file path + key), so they can roll it back if they change their mind.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
@@ -104,6 +151,10 @@ The block:
 ### Domain docs
 
 [one-line summary of layout — "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+
+### Preferred skills
+
+[only present if overlaps were detected in step 2 — see Section D for format]
 ```
 
 Then write the three docs files using the seed templates in this skill folder as a starting point:
