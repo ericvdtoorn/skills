@@ -16,3 +16,7 @@ Each bucket folder has a `README.md` that lists every skill in the bucket with a
 ## Git commits
 
 Single-line commits prefixed with a gitmoji, one functional purpose per commit. No body. No `Co-Authored-By:` trailer unless explicitly asked. See `skills/engineering/gitmoji-commits/SKILL.md` for the emoji table, examples, and the isolation rule.
+
+## Comment style
+
+Doc comments encouraged on public APIs (functions, types, modules). Inline comments inside function bodies are heavily discouraged — if you want to write one explaining *what* the next lines do, extract a named function instead. Exceptions only for non-obvious *why* (workarounds linked to a bug, subtle invariants, surprising behaviour). See `skills/engineering/comment-style/SKILL.md`.

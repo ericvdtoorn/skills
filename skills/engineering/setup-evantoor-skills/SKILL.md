@@ -191,6 +191,20 @@ Walk the user through three steps. Skip cleanly when the answer is "already done
 
 3. **Optionally** offer to install a `commit-msg` hook that rejects messages without a leading emoji + one-line subject. Default: don't install — most repos don't need enforcement. Only install if the user explicitly asks.
 
+**Section G — Comment style.**
+
+> Explainer: evantoor's convention is doc comments on public surfaces (yes), inline comments inside function bodies (no — extract a named function instead). The `comment-style` skill has the full reference. This section wires the rule into the repo so agents follow it without being told.
+
+**Append to the `## Agent skills` block** in CLAUDE.md / AGENTS.md:
+
+```markdown
+### Comment style
+
+Doc comments encouraged on public APIs (functions, types, modules). Inline comments inside function bodies are heavily discouraged — if you want to write one explaining *what* the next lines do, extract a named function instead. Exceptions for non-obvious *why* only (workarounds, invariants, surprising behaviour). See the `comment-style` skill.
+```
+
+No hook or lint to install — this is a stylistic rule applied during authoring and review, not at commit time.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
@@ -236,6 +250,10 @@ mise + [list ecosystems pinned, e.g. bun + uv]. Tasks live in `mise/tasks/`, log
 ### Git commits
 
 Single-line commits prefixed with a gitmoji, one functional purpose per commit. No body. No trailers unless the user asks. See the `gitmoji-commits` skill.
+
+### Comment style
+
+Doc comments encouraged on public APIs. Inline comments discouraged — extract a named function instead. Exceptions for non-obvious *why* only. See the `comment-style` skill.
 
 ### Preferred skills
 

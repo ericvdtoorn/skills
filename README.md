@@ -137,6 +137,7 @@ Software engineering fundamentals matter more than ever. These skills are my bes
 
 Skills I use daily for code work.
 
+- **[comment-style](./skills/engineering/comment-style/SKILL.md)** — Doc comments encouraged, inline comments heavily discouraged; extract a named function instead of writing one.
 - **[diagnose](./skills/engineering/diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[gitmoji-commits](./skills/engineering/gitmoji-commits/SKILL.md)** — Single-line commits prefixed with a gitmoji, one functional purpose per commit. Emoji table, examples, isolation rule.
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
