@@ -1,6 +1,6 @@
 ---
 name: setup-evantoor-skills
-description: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Also detects overlapping skills from other plugins (e.g. superpowers) and records local preferences. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
+description: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Also detects overlapping skills from other plugins (e.g. superpowers), recommends which installed skills fit this project's stack (enabling relevant ones, disabling irrelevant ones), and records local preferences. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
 disable-model-invocation: true
 ---
 
@@ -205,6 +205,25 @@ Doc comments encouraged on public APIs (functions, types, modules). Inline comme
 
 No hook or lint to install — this is a stylistic rule applied during authoring and review, not at commit time.
 
+**Section H — Skill relevance.**
+
+> Explainer: Where Section D resolves *conflicts* between packs that cover the same ground, this section asks a different question: which installed skills actually fit *this* project? A Rust-only pack in a TypeScript repo, an Obsidian skill with no vault, or `migrate-to-shoehorn` in a non-TS repo are all noise — they bloat the skill list and occasionally fire when they shouldn't. The fix is to keep the skills that match the repo's stack and disable the ones that clearly don't.
+
+Detect the repo's stack signals, then classify every skill **actually loaded in the current session** (read the `available skills` and `MCP` blocks from your own context — don't invent skills from training data) as keep or disable. Use [skill-relevance.md](./skill-relevance.md) for the detection signals and the seed mapping; for any loaded skill the table doesn't name, judge it from its own `description` against the detected signals, and **when unsure, keep it and say so** — never disable on a guess.
+
+Three buckets:
+
+- **Universal** — language-agnostic engineering/writing skills (most of evantoor's core: `tdd`, `diagnose`, `grill-*`, `to-prd`, etc.) and doc fetchers. Never disabled on stack grounds. A repo being Rust or Python is not a reason to turn off `tdd` or `diagnose`.
+- **Stack-gated, signal present** — recommend keeping (e.g. `rust-skills` in a `Cargo.toml` repo, `frontend-design` in a UI repo).
+- **Stack-gated, no signal** — recommend disabling (e.g. the whole `rust-skills` pack when there's no `Cargo.toml`, `obsidian-vault` with no `.obsidian/`, `migrate-to-shoehorn` in a non-TS repo).
+
+Present the recommendation as two short lists — **keep** and **disable as irrelevant** — and let the user veto any line before you write. Then apply with the **same two layers as Section D**:
+
+1. **Hard disable** via `.claude/settings.local.json` — `enabledPlugins` to drop a whole pack, `disabledSkills` for individual skills. If unsure of the exact key, ask before writing.
+2. **Soft note** — write a `### Skill relevance` subsection under `## Agent skills` recording what was disabled as irrelevant and which stack-specific skills to prefer, so re-runs and future sessions see the decision.
+
+After applying, tell the user exactly what was disabled and where (file path + key), so they can roll it back.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
@@ -258,6 +277,10 @@ Doc comments encouraged on public APIs. Inline comments discouraged — extract 
 ### Preferred skills
 
 [only present if overlaps were detected in step 2 — see Section D for format]
+
+### Skill relevance
+
+[only present if any skill was disabled as irrelevant in step 2 — see Section H. List the disabled skills and the stack-specific ones to prefer.]
 ```
 
 Then write the docs files using the seed templates in this skill folder as a starting point:
@@ -270,6 +293,7 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [tooling.md](./tooling.md) — mise + bun + uv conventions
 - [mise.toml](./mise.toml) — seed `.mise.toml`
 - [task-template.sh](./task-template.sh) — seed file task (logging + tail pattern)
+- [skill-relevance.md](./skill-relevance.md) — detection signals + seed stack→skill mapping for Section H
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 

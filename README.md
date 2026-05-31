@@ -27,6 +27,7 @@ npx skills@latest add ericvdtoorn/skills
    - Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
    - Ask you where you want to save any docs we create
    - Check for overlapping skills from other plugins (e.g. `superpowers`) and disable or deprioritise them locally so you don't get inconsistent behaviour across sessions
+   - Recommend which installed skills fit your project's stack — enabling relevant ones and disabling clearly-irrelevant ones (e.g. a Rust pack in a TypeScript repo)
 
 4. Bam - you're ready to go.
 
