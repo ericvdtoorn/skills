@@ -4,7 +4,7 @@ This repo uses [mise](https://mise.jdx.dev) for tool management and task running
 
 ## Layout
 
-- `.mise.toml` — pinned tool versions (bun, uv, python, …) and task config
+- `mise.toml` — pinned tool versions (bun, uv, python, …) and task config
 - `mise/tasks/` — file tasks (each task is its own executable file)
 - `mise/logs/` — task output (gitignored; `*.log`)
 

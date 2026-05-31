@@ -25,7 +25,7 @@ Cheap, deterministic checks. Run the ones that are fast; don't over-engineer.
 | Rust | `Cargo.toml` |
 | Python | `pyproject.toml`, `requirements.txt`, `setup.py` |
 | Go | `go.mod` |
-| mise tooling | `.mise.toml` / `mise.toml`, or a `mise/tasks/` dir |
+| mise tooling | `mise.toml` / `.mise.toml`, or a `mise/tasks/` dir |
 | Obsidian vault | `.obsidian/` directory |
 | Writing / article repo | repo is mostly prose (`.md`/`.mdx` content, little or no source), or a `content/`/`posts/`/`articles/` tree |
 | Course / exercise repo | numbered section dirs with problem/solution/explainer stubs |

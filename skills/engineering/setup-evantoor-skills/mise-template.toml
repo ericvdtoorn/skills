@@ -1,5 +1,5 @@
-# Seed `.mise.toml` for repos set up by /setup-evantoor-skills.
-# Copy this file to the repo root as `.mise.toml`, then `mise install` and `mise trust`.
+# Seed `mise.toml` for repos set up by /setup-evantoor-skills.
+# Copy this file to the repo root as `mise.toml`, then `mise install` and `mise trust`.
 
 [tools]
 # JS runtime + package manager

@@ -126,9 +126,9 @@ After applying, **note to the user** exactly what was disabled and where (file p
 
 Walk the user through three steps. Skip cleanly when the answer is "already done" (don't overwrite existing files).
 
-1. **Pick which ecosystems to wire up.** Ask the user which of `bun`, `uv` / `python`, `node` they want pinned in `.mise.toml`. Default: bun + uv + python. Drop any they say they don't need.
+1. **Pick which ecosystems to wire up.** Ask the user which of `bun`, `uv` / `python`, `node` they want pinned in `mise.toml`. Default: bun + uv + python. Drop any they say they don't need.
 
-2. **Write or update `.mise.toml`.** Use [mise.toml](./mise.toml) as the seed. If `.mise.toml` already exists, merge — don't clobber the user's existing `[tools]` or `[env]` blocks. Always ensure `[task_config]` includes `mise/tasks` so file tasks under that path are discoverable.
+2. **Write or update `mise.toml`.** Use [mise-template.toml](./mise-template.toml) as the seed; write it to the repo root as `mise.toml` (the non-hidden form — not `.mise.toml`). If a `mise.toml` (or legacy `.mise.toml`) already exists, merge — don't clobber the user's existing `[tools]` or `[env]` blocks. Always ensure `[task_config]` includes `mise/tasks` so file tasks under that path are discoverable.
 
 3. **Create the task + log scaffolding** (idempotent — skip files that already exist):
    - `mise/tasks/` directory
@@ -173,7 +173,7 @@ Walk the user through three steps. Skip cleanly when the answer is "already done
    mise + bun + uv. Tasks live in `mise/tasks/`, logs in `mise/logs/<task>.log`. See `docs/agents/tooling.md`. Author new tasks via the `mise-tasks` skill.
    ```
 
-6. **Tell the user what was done** — list the files created (`.mise.toml`, `mise/tasks/`, `mise/logs/`, `docs/agents/tooling.md`, `.claude/settings.local.json` hook) and remind them to run `mise install && mise trust` once.
+6. **Tell the user what was done** — list the files created (`mise.toml`, `mise/tasks/`, `mise/logs/`, `docs/agents/tooling.md`, `.claude/settings.local.json` hook) and remind them to run `mise install && mise trust` once.
 
 **Section F — Git commit format.**
 
@@ -291,7 +291,7 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [triage-labels.md](./triage-labels.md) — label mapping
 - [domain.md](./domain.md) — domain doc consumer rules + layout
 - [tooling.md](./tooling.md) — mise + bun + uv conventions
-- [mise.toml](./mise.toml) — seed `.mise.toml`
+- [mise-template.toml](./mise-template.toml) — seed `mise.toml`
 - [task-template.sh](./task-template.sh) — seed file task (logging + tail pattern)
 - [skill-relevance.md](./skill-relevance.md) — detection signals + seed stack→skill mapping for Section H
 
