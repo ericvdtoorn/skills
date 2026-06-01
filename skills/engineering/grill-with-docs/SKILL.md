@@ -5,9 +5,9 @@ description: Grilling session that challenges your plan against the existing dom
 
 <what-to-do>
 
-Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
+Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
 
-Ask the questions one at a time, waiting for feedback on each question before continuing.
+Ask the questions one at a time, in prose, waiting for feedback on each question before continuing. Do not use the multiple-choice question UI. When a question has discrete options, write them out as plain text, then give a short analysis of which one you'd recommend and why.
 
 If a question can be answered by exploring the codebase, explore the codebase instead.
 
