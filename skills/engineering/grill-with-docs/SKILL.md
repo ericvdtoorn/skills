@@ -85,4 +85,8 @@ Only offer to create an ADR when all three are true:
 
 If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
 
+## When the grilling resolves
+
+Once the plan is settled, hand off to building. Classify the change's size with the [implement](../implement/SKILL.md) rubric and recommend running `/implement`, naming the likely branch — subagent-driven development for a big/architectural change, a direct main-agent implementation for a small one. The user can override the call.
+
 </supporting-info>

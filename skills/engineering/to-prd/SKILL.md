@@ -72,3 +72,7 @@ A description of the things that are out of scope for this PRD.
 Any further notes about the feature.
 
 </prd-template>
+
+## After the PRD
+
+With the PRD published, recommend a path to building it. For synchronous work in this session, hand off to [implement](../implement/SKILL.md) — it sizes the change and routes to subagent-driven development or a direct main-agent implementation, committing as it goes. If the work should instead be queued for AFK agents to pick up, [to-issues](../to-issues/SKILL.md) is the path that breaks the PRD into independently-grabbable tickets.
