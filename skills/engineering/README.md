@@ -6,7 +6,7 @@ Skills I use daily for code work.
 - **[diagnosing-bugs](./diagnosing-bugs/SKILL.md)** — Diagnosis loop for hard bugs and performance regressions: build a tight red-capable feedback loop first, then reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[gitmoji-commits](./gitmoji-commits/SKILL.md)** — Single-line commits prefixed with a gitmoji, one functional purpose per commit. Emoji table, examples, isolation rule.
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline — `/grill-me` plus `/domain-modeling`.
-- **[triage](./triage/SKILL.md)** — Triage issues through a state machine of triage roles.
+- **[triage](./triage/SKILL.md)** — Move issues and external PRs through a state machine of triage roles — categorise, verify the claim, grill if needed, and write agent-ready briefs.
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)** — Scan a codebase for deepening opportunities — scoped to where change is landing — present them as a visual HTML report, then grill through whichever one you pick.
 - **[mise-tasks](./mise-tasks/SKILL.md)** — Reference for authoring and running mise file tasks. File-task template with `mise/logs/<task>.log` output and a tail pattern that names the log path so agents don't re-run for context.
 - **[setup-evantoor-skills](./setup-evantoor-skills/SKILL.md)** — Scaffold the per-repo config (issue tracker, triage label vocabulary, domain doc layout, mise/bun/uv tooling) that the other engineering skills consume, and disable overlapping skills from other plugins.
