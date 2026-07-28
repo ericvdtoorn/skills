@@ -10,7 +10,7 @@ Skills I use daily for code work.
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)** — Scan a codebase for deepening opportunities — scoped to where change is landing — present them as a visual HTML report, then grill through whichever one you pick.
 - **[mise-tasks](./mise-tasks/SKILL.md)** — Reference for authoring and running mise file tasks. File-task template with `mise/logs/<task>.log` output and a tail pattern that names the log path so agents don't re-run for context.
 - **[setup-evantoor-skills](./setup-evantoor-skills/SKILL.md)** — Scaffold the per-repo config (issue tracker, triage label vocabulary, domain doc layout, mise/bun/uv tooling) that the other engineering skills consume, and disable overlapping skills from other plugins.
-- **[tdd](./tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
+- **[tdd](./tdd/SKILL.md)** — Test-driven development as a red → green loop, plus the reference that makes it produce tests worth keeping: what a good test is, pre-agreed seams, and the anti-patterns (implementation-coupled, tautological, horizontally sliced).
 - **[to-tickets](./to-tickets/SKILL.md)** — Break a plan, spec, or the current conversation into tracer-bullet tickets, each declaring its blocking edges — including expand–contract sequencing for wide refactors.
 - **[to-spec](./to-spec/SKILL.md)** — Turn the current conversation into a spec (you may know it as a PRD) and publish it to the project issue tracker. No interview — just synthesises what you have already discussed.
 - **[zoom-out](./zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
