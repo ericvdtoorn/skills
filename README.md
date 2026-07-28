@@ -123,7 +123,7 @@ For debugging, I've also built a **[`/diagnosing-bugs`](./skills/engineering/dia
 
 This is built in to every layer of these skills:
 
-- [`/to-prd`](./skills/engineering/to-prd/SKILL.md) quizzes you about which modules you're touching before creating a PRD
+- [`/to-spec`](./skills/engineering/to-spec/SKILL.md) quizzes you about which modules you're touching before creating a spec
 - [`/zoom-out`](./skills/engineering/zoom-out/SKILL.md) tells the agent to explain code in the context of the whole system
 
 And crucially, [`/improve-codebase-architecture`](./skills/engineering/improve-codebase-architecture/SKILL.md) helps you rescue a codebase that has become a ball of mud. I recommend running it on your codebase once every few days.
@@ -145,10 +145,10 @@ Skills I use daily for code work.
 - **[triage](./skills/engineering/triage/SKILL.md)** — Triage issues through a state machine of triage roles.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.
 - **[mise-tasks](./skills/engineering/mise-tasks/SKILL.md)** — Reference for authoring and running mise file tasks. File-task template with `mise/logs/<task>.log` output and a tail pattern that names the log path so agents don't re-run for context.
-- **[setup-evantoor-skills](./skills/engineering/setup-evantoor-skills/SKILL.md)** — Scaffold the per-repo config (issue tracker, triage label vocabulary, domain doc layout, mise/bun/uv tooling) that the other engineering skills consume, and disable any overlapping skills from other plugins. Run once per repo before using `to-issues`, `to-prd`, `triage`, `diagnosing-bugs`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
+- **[setup-evantoor-skills](./skills/engineering/setup-evantoor-skills/SKILL.md)** — Scaffold the per-repo config (issue tracker, triage label vocabulary, domain doc layout, mise/bun/uv tooling) that the other engineering skills consume, and disable any overlapping skills from other plugins. Run once per repo before using `to-tickets`, `to-spec`, `triage`, `diagnosing-bugs`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
 - **[tdd](./skills/engineering/tdd/SKILL.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
-- **[to-issues](./skills/engineering/to-issues/SKILL.md)** — Break any plan, spec, or PRD into independently-grabbable GitHub issues using vertical slices.
-- **[to-prd](./skills/engineering/to-prd/SKILL.md)** — Turn the current conversation context into a PRD and submit it as a GitHub issue. No interview — just synthesizes what you've already discussed.
+- **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** — Break a plan, spec, or the current conversation into tracer-bullet tickets, each declaring its blocking edges — including expand–contract sequencing for wide refactors.
+- **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Turn the current conversation into a spec (you may know it as a PRD) and publish it to the project issue tracker. No interview — just synthesises what you have already discussed.
 - **[zoom-out](./skills/engineering/zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
 - **[prototype](./skills/engineering/prototype/SKILL.md)** — Build a throwaway prototype to flesh out a design — either a runnable terminal app for state/business-logic questions, or several radically different UI variations toggleable from one route.
 - **[implement](./skills/engineering/implement/SKILL.md)** — Turn an agreed plan into committed code, routing by size: subagent-driven development for big/architectural changes, direct main-agent implementation for small touches. Auto-commits with gitmoji.

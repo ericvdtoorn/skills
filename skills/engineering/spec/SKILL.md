@@ -42,4 +42,4 @@ Hand off to [implement](../implement/SKILL.md) with the size already decided. Fo
 
 ## What this is not
 
-`/spec` builds **now, in this session**. When the feature should instead be written up and queued for AFK agents, that's [to-prd](../to-prd/SKILL.md) (publish a PRD) and [to-issues](../to-issues/SKILL.md) (break it into tickets) — a separate, asynchronous path.
+`/spec` builds **now, in this session**. When the feature should instead be written up and queued for AFK agents, that's [to-spec](../to-spec/SKILL.md) (publish a spec) and [to-tickets](../to-tickets/SKILL.md) (break it into tickets) — a separate, asynchronous path.

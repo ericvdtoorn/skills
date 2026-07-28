@@ -4,7 +4,7 @@ The change is large enough that doing it inline would produce an unreviewable bl
 
 ## 1. Decompose into vertical slices
 
-Break the plan into **thin, dependency-ordered vertical slices** — each one a small end-to-end change that leaves the codebase working, not a horizontal layer (no "all the types", then "all the logic"). This is the same tracer-bullet thinking as [to-issues](../to-issues/SKILL.md), but **in-conversation — do not create tracker tickets**.
+Break the plan into **thin, dependency-ordered vertical slices** — each one a small end-to-end change that leaves the codebase working, not a horizontal layer (no "all the types", then "all the logic"). This is the same tracer-bullet thinking as [to-tickets](../to-tickets/SKILL.md), but **in-conversation — do not create tracker tickets**.
 
 Write the slice list out so the user can see the plan and the order. Each slice should be one gitmoji commit's worth of work.
 
@@ -29,6 +29,6 @@ After a slice integrates and its checks pass, **commit it immediately** with a s
 
 When every slice has landed, run the **full** typecheck/test suite to confirm the slices compose, then report a short summary: the slices, each commit, and anything left out of scope.
 
-## Not the same as `/to-issues`
+## Not the same as `/to-tickets`
 
-This branch is the **synchronous, in-conversation** path for building a big change now. [to-issues](../to-issues/SKILL.md) remains the **asynchronous / AFK** path — it publishes ticket-shaped slices for agents to pick up later. Use that one when the work should be queued rather than built in this session.
+This branch is the **synchronous, in-conversation** path for building a big change now. [to-tickets](../to-tickets/SKILL.md) remains the **asynchronous / AFK** path — it publishes ticket-shaped slices for agents to pick up later. Use that one when the work should be queued rather than built in this session.
