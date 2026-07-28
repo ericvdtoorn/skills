@@ -7,11 +7,19 @@ Skills are organized into bucket folders under `skills/`:
 - `in-progress/` — drafts not yet ready to ship
 - `deprecated/` — no longer used
 
-Every skill in `engineering/`, `productivity/`, or `misc/` must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`. Skills in `personal/`, `in-progress/`, and `deprecated/` must not appear in either.
+Every skill in `engineering/`, `productivity/`, or `misc/` must have a reference in the top-level `README.md`. Skills in `personal/`, `in-progress/`, and `deprecated/` must not appear there.
+
+`.claude-plugin/plugin.json`'s `skills` array ships exactly the **promoted** buckets — `engineering/` and `productivity/`. `misc/` skills are documented but not shipped.
 
 Each skill entry in the top-level `README.md` must link the skill name to its `SKILL.md`.
 
 Each bucket folder has a `README.md` that lists every skill in the bucket with a one-line description, with the skill name linked to its `SKILL.md`.
+
+Every skill folder also carries an `agents/openai.yaml` giving Codex its display name and short description, plus `policy.allow_implicit_invocation: false` whenever the `SKILL.md` sets `disable-model-invocation: true`.
+
+## Releases
+
+Versioning runs on [changesets](https://github.com/changesets/changesets). Add a changeset (`npx changeset`) for any user-visible skill change; the release workflow opens a version PR from whatever has accumulated. Keep `.claude-plugin/plugin.json`'s `version` in sync with `package.json`'s — Claude uses the plugin `version` to decide when installed users see an update.
 
 ## Git commits
 
