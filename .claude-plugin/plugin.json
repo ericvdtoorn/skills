@@ -19,6 +19,11 @@
     "./skills/productivity/caveman",
     "./skills/productivity/grill-me",
     "./skills/productivity/handoff",
-    "./skills/productivity/write-a-skill"
+    "./skills/productivity/write-a-skill",
+    "./skills/engineering/codebase-design",
+    "./skills/engineering/domain-modeling",
+    "./skills/engineering/research",
+    "./skills/engineering/resolving-merge-conflicts",
+    "./skills/engineering/wayfinder"
   ]
 }

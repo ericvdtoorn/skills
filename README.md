@@ -153,6 +153,11 @@ Skills I use daily for code work.
 - **[prototype](./skills/engineering/prototype/SKILL.md)** — Build a throwaway prototype to flesh out a design — either a runnable terminal app for state/business-logic questions, or several radically different UI variations toggleable from one route.
 - **[implement](./skills/engineering/implement/SKILL.md)** — Turn an agreed plan into committed code, routing by size: subagent-driven development for big/architectural changes, direct main-agent implementation for small touches. Auto-commits with gitmoji.
 - **[spec](./skills/engineering/spec/SKILL.md)** — Front door for a new feature: `/spec <feature>` does discovery, sizes the change, decides whether grilling is needed, runs it if so, then routes to `implement` — all in one auto-driven flow.
+- **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** — Shared vocabulary for deep modules — module, interface, seam, depth, leverage, locality — plus the deepening and design-it-twice practices other skills lean on.
+- **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)** — Actively build and sharpen the project's domain model: challenge fuzzy terms, write `CONTEXT.md`, and record ADRs as decisions crystallise.
+- **[research](./skills/engineering/research/SKILL.md)** — Spin up a background agent to investigate a question against primary sources and capture the findings as a markdown file in the repo.
+- **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)** — Resolve an in-progress merge or rebase by finding the primary source behind each hunk and preserving both intents.
+- **[wayfinder](./skills/engineering/wayfinder/SKILL.md)** — Plan work too big for one agent session as a shared map of decision tickets on your issue tracker, resolved one at a time until the way is clear.
 
 ### Productivity
 
