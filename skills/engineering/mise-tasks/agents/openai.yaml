@@ -1,0 +1,3 @@
+interface:
+  display_name: "Mise Tasks"
+  short_description: "Author and run mise file tasks"

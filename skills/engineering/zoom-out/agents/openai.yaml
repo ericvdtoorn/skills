@@ -1,0 +1,5 @@
+interface:
+  display_name: "Zoom Out"
+  short_description: "Explain code in whole-system context"
+policy:
+  allow_implicit_invocation: false
