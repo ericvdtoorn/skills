@@ -37,7 +37,7 @@ Cheap, deterministic checks. Run the ones that are fast; don't over-engineer.
 
 These apply to almost any repo. Leave them active regardless of language. (They may still be turned off by **Section D** if another pack wins the same area — that's a separate decision.)
 
-- evantoor core workflow: `grill-me`, `grill-with-docs`, `to-prd`, `to-issues`, `triage`, `tdd`, `diagnosing-bugs`, `improve-codebase-architecture`, `zoom-out`, `prototype`, `handoff`, `write-a-skill`, `caveman`, `gitmoji-commits`, `comment-style`
+- evantoor core workflow: `grill-me`, `grill-with-docs`, `to-prd`, `to-issues`, `triage`, `tdd`, `diagnosing-bugs`, `improve-codebase-architecture`, `zoom-out`, `prototype`, `handoff`, `writing-great-skills`, `caveman`, `gitmoji-commits`, `comment-style`
 - doc fetchers / general tooling: `context7` (MCP), and similar library-docs lookups
 
 `tdd`, `diagnosing-bugs`, `to-issues`, `triage` are language-agnostic by design — a repo being Rust or Python is **not** a reason to disable them.

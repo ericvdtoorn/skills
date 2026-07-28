@@ -69,7 +69,7 @@ Confirm the layout:
 
 **Section D — Overlap check.**
 
-> Explainer: Other skill packs (notably `superpowers`, but also some custom packs people install globally) ship skills that overlap with evantoor's: superpowers ships test-driven-development, systematic-debugging, brainstorming, writing-skills, writing-plans, executing-plans — each of which covers ground that one of evantoor's skills also covers (`tdd`, `diagnosing-bugs`, `grill-me`/`grill-with-docs`, `write-a-skill`, `to-prd`, `handoff`). When two skills cover the same ground the agent picks one at random, which makes behaviour inconsistent across sessions. The fix is to pick **one pack** as the winner for the overlapping area and keep that pack whole.
+> Explainer: Other skill packs (notably `superpowers`, but also some custom packs people install globally) ship skills that overlap with evantoor's: superpowers ships test-driven-development, systematic-debugging, brainstorming, writing-skills, writing-plans, executing-plans — each of which covers ground that one of evantoor's skills also covers (`tdd`, `diagnosing-bugs`, `grill-me`/`grill-with-docs`, `writing-great-skills`, `to-prd`, `handoff`). When two skills cover the same ground the agent picks one at random, which makes behaviour inconsistent across sessions. The fix is to pick **one pack** as the winner for the overlapping area and keep that pack whole.
 
 **Choose at the pack level, not the skill level.** Each pack is internally consistent — its skills reference and call into each other (e.g. superpowers' brainstorming → writing-plans → executing-plans → requesting-code-review forms a chain). Cherry-picking individual skills across packs breaks those chains. Pick which pack owns the overlapping area and disable the other in that area as a whole.
 
@@ -79,12 +79,12 @@ Group the detected overlaps by source pack and present each pack as a single dec
 
 | Pack | Skills that overlap with evantoor | Default |
 | --- | --- | --- |
-| `superpowers` | `test-driven-development` (vs `tdd`), `systematic-debugging` (vs `diagnosing-bugs`), `brainstorming` (vs `grill-me`/`grill-with-docs`), `writing-skills` (vs `write-a-skill`), `writing-plans` (vs `to-prd`), `executing-plans` (vs `handoff`) | keep `evantoor` for this area |
+| `superpowers` | `test-driven-development` (vs `tdd`), `systematic-debugging` (vs `diagnosing-bugs`), `brainstorming` (vs `grill-me`/`grill-with-docs`), `writing-skills` (vs `writing-great-skills`), `writing-plans` (vs `to-prd`), `executing-plans` (vs `handoff`) | keep `evantoor` for this area |
 | `<other pack>` | …list detected overlaps… | keep `evantoor` |
 
 Present the choice to the user like:
 
-> Found overlap with the `superpowers` pack — it ships 6 skills covering the same ground as evantoor's `tdd`, `diagnosing-bugs`, `grill-*`, `write-a-skill`, `to-prd`, and `handoff`. Pick one pack to own this area:
+> Found overlap with the `superpowers` pack — it ships 6 skills covering the same ground as evantoor's `tdd`, `diagnosing-bugs`, `grill-*`, `writing-great-skills`, `to-prd`, and `handoff`. Pick one pack to own this area:
 > - **Keep evantoor** (default) — disable superpowers' overlapping skills locally; superpowers' non-overlapping skills stay active
 > - **Keep superpowers** — leave superpowers active and skip writing the preferred-skills hint
 > - **Keep both** (discouraged) — leads to inconsistent behaviour across sessions
@@ -111,7 +111,7 @@ When skills overlap, prefer the `evantoor` pack over `<other pack>` for these ar
 - TDD / red-green-refactor → `evantoor:tdd`
 - Debugging / bug diagnosis → `evantoor:diagnosing-bugs`
 - Brainstorming / spec interviews → `evantoor:grill-me` and `evantoor:grill-with-docs`
-- Writing skills → `evantoor:write-a-skill`
+- Writing skills → `evantoor:writing-great-skills`
 - PRDs / plans → `evantoor:to-prd`
 - Handoff between sessions → `evantoor:handoff`
 ```
