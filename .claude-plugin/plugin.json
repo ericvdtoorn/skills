@@ -24,6 +24,7 @@
     "./skills/engineering/domain-modeling",
     "./skills/engineering/research",
     "./skills/engineering/resolving-merge-conflicts",
-    "./skills/engineering/wayfinder"
+    "./skills/engineering/wayfinder",
+    "./skills/engineering/code-review"
   ]
 }

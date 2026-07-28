@@ -22,3 +22,4 @@ Skills I use daily for code work.
 - **[research](./research/SKILL.md)** — Spin up a background agent to investigate a question against primary sources and capture the findings as a markdown file in the repo.
 - **[resolving-merge-conflicts](./resolving-merge-conflicts/SKILL.md)** — Resolve an in-progress merge or rebase by finding the primary source behind each hunk and preserving both intents.
 - **[wayfinder](./wayfinder/SKILL.md)** — Plan work too big for one agent session as a shared map of decision tickets on your issue tracker, resolved one at a time until the way is clear.
+- **[code-review](./code-review/SKILL.md)** — Review the diff since a fixed point along two parallel axes — **Standards** (does it follow the repo's documented standards, plus a Fowler smell baseline?) and **Spec** (does it faithfully implement the originating issue/spec?) — run as parallel sub-agents.
