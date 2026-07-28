@@ -3,7 +3,7 @@
 Skills I use daily for code work.
 
 - **[comment-style](./comment-style/SKILL.md)** — Doc comments encouraged, inline comments heavily discouraged; extract a named function instead of writing one.
-- **[diagnose](./diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
+- **[diagnosing-bugs](./diagnosing-bugs/SKILL.md)** — Diagnosis loop for hard bugs and performance regressions: build a tight red-capable feedback loop first, then reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[gitmoji-commits](./gitmoji-commits/SKILL.md)** — Single-line commits prefixed with a gitmoji, one functional purpose per commit. Emoji table, examples, isolation rule.
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
 - **[triage](./triage/SKILL.md)** — Triage issues through a state machine of triage roles.

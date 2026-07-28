@@ -1,6 +1,6 @@
 ---
 name: setup-evantoor-skills
-description: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Also detects overlapping skills from other plugins (e.g. superpowers), recommends which installed skills fit this project's stack (enabling relevant ones, disabling irrelevant ones), and records local preferences. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
+description: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Also detects overlapping skills from other plugins (e.g. superpowers), recommends which installed skills fit this project's stack (enabling relevant ones, disabling irrelevant ones), and records local preferences. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnosing-bugs`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
 disable-model-invocation: true
 ---
 
@@ -60,7 +60,7 @@ Default: each role's string equals its name. Ask the user if they want to overri
 
 **Section C — Domain docs.**
 
-> Explainer: Some skills (`improve-codebase-architecture`, `diagnose`, `tdd`) read a `CONTEXT.md` file to learn the project's domain language, and `docs/adr/` for past architectural decisions. They need to know whether the repo has one global context or multiple (e.g. a monorepo with separate frontend/backend contexts) so they look in the right place.
+> Explainer: Some skills (`improve-codebase-architecture`, `diagnosing-bugs`, `tdd`) read a `CONTEXT.md` file to learn the project's domain language, and `docs/adr/` for past architectural decisions. They need to know whether the repo has one global context or multiple (e.g. a monorepo with separate frontend/backend contexts) so they look in the right place.
 
 Confirm the layout:
 
@@ -69,7 +69,7 @@ Confirm the layout:
 
 **Section D — Overlap check.**
 
-> Explainer: Other skill packs (notably `superpowers`, but also some custom packs people install globally) ship skills that overlap with evantoor's: superpowers ships test-driven-development, systematic-debugging, brainstorming, writing-skills, writing-plans, executing-plans — each of which covers ground that one of evantoor's skills also covers (`tdd`, `diagnose`, `grill-me`/`grill-with-docs`, `write-a-skill`, `to-prd`, `handoff`). When two skills cover the same ground the agent picks one at random, which makes behaviour inconsistent across sessions. The fix is to pick **one pack** as the winner for the overlapping area and keep that pack whole.
+> Explainer: Other skill packs (notably `superpowers`, but also some custom packs people install globally) ship skills that overlap with evantoor's: superpowers ships test-driven-development, systematic-debugging, brainstorming, writing-skills, writing-plans, executing-plans — each of which covers ground that one of evantoor's skills also covers (`tdd`, `diagnosing-bugs`, `grill-me`/`grill-with-docs`, `write-a-skill`, `to-prd`, `handoff`). When two skills cover the same ground the agent picks one at random, which makes behaviour inconsistent across sessions. The fix is to pick **one pack** as the winner for the overlapping area and keep that pack whole.
 
 **Choose at the pack level, not the skill level.** Each pack is internally consistent — its skills reference and call into each other (e.g. superpowers' brainstorming → writing-plans → executing-plans → requesting-code-review forms a chain). Cherry-picking individual skills across packs breaks those chains. Pick which pack owns the overlapping area and disable the other in that area as a whole.
 
@@ -79,12 +79,12 @@ Group the detected overlaps by source pack and present each pack as a single dec
 
 | Pack | Skills that overlap with evantoor | Default |
 | --- | --- | --- |
-| `superpowers` | `test-driven-development` (vs `tdd`), `systematic-debugging` (vs `diagnose`), `brainstorming` (vs `grill-me`/`grill-with-docs`), `writing-skills` (vs `write-a-skill`), `writing-plans` (vs `to-prd`), `executing-plans` (vs `handoff`) | keep `evantoor` for this area |
+| `superpowers` | `test-driven-development` (vs `tdd`), `systematic-debugging` (vs `diagnosing-bugs`), `brainstorming` (vs `grill-me`/`grill-with-docs`), `writing-skills` (vs `write-a-skill`), `writing-plans` (vs `to-prd`), `executing-plans` (vs `handoff`) | keep `evantoor` for this area |
 | `<other pack>` | …list detected overlaps… | keep `evantoor` |
 
 Present the choice to the user like:
 
-> Found overlap with the `superpowers` pack — it ships 6 skills covering the same ground as evantoor's `tdd`, `diagnose`, `grill-*`, `write-a-skill`, `to-prd`, and `handoff`. Pick one pack to own this area:
+> Found overlap with the `superpowers` pack — it ships 6 skills covering the same ground as evantoor's `tdd`, `diagnosing-bugs`, `grill-*`, `write-a-skill`, `to-prd`, and `handoff`. Pick one pack to own this area:
 > - **Keep evantoor** (default) — disable superpowers' overlapping skills locally; superpowers' non-overlapping skills stay active
 > - **Keep superpowers** — leave superpowers active and skip writing the preferred-skills hint
 > - **Keep both** (discouraged) — leads to inconsistent behaviour across sessions
@@ -109,7 +109,7 @@ The `### Preferred skills` block:
 When skills overlap, prefer the `evantoor` pack over `<other pack>` for these areas:
 
 - TDD / red-green-refactor → `evantoor:tdd`
-- Debugging / bug diagnosis → `evantoor:diagnose`
+- Debugging / bug diagnosis → `evantoor:diagnosing-bugs`
 - Brainstorming / spec interviews → `evantoor:grill-me` and `evantoor:grill-with-docs`
 - Writing skills → `evantoor:write-a-skill`
 - PRDs / plans → `evantoor:to-prd`
@@ -213,7 +213,7 @@ Detect the repo's stack signals, then classify every skill **actually loaded in 
 
 Three buckets:
 
-- **Universal** — language-agnostic engineering/writing skills (most of evantoor's core: `tdd`, `diagnose`, `grill-*`, `to-prd`, etc.) and doc fetchers. Never disabled on stack grounds. A repo being Rust or Python is not a reason to turn off `tdd` or `diagnose`.
+- **Universal** — language-agnostic engineering/writing skills (most of evantoor's core: `tdd`, `diagnosing-bugs`, `grill-*`, `to-prd`, etc.) and doc fetchers. Never disabled on stack grounds. A repo being Rust or Python is not a reason to turn off `tdd` or `diagnosing-bugs`.
 - **Stack-gated, signal present** — recommend keeping (e.g. `rust-skills` in a `Cargo.toml` repo, `frontend-design` in a UI repo).
 - **Stack-gated, no signal** — recommend disabling (e.g. the whole `rust-skills` pack when there's no `Cargo.toml`, `obsidian-vault` with no `.obsidian/`, `migrate-to-shoehorn` in a non-TS repo).
 
