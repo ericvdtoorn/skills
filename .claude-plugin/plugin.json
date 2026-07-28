@@ -26,6 +26,7 @@
     "./skills/engineering/research",
     "./skills/engineering/resolving-merge-conflicts",
     "./skills/engineering/wayfinder",
-    "./skills/engineering/code-review"
+    "./skills/engineering/code-review",
+    "./skills/productivity/teach"
   ]
 }
