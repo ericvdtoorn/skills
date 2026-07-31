@@ -12,24 +12,68 @@ If you want to keep up with changes to these skills, and any new ones I create, 
 
 [Sign Up To The Newsletter](https://www.aihero.dev/s/skills-newsletter)
 
-## Quickstart (30-second setup)
+## Installation (30-second setup)
 
-1. Run the skills.sh installer:
+Two ways in, two philosophies. **The [Claude Code plugin](https://code.claude.com/docs/en/plugins)** installs the whole set as a managed, read-only bundle that updates when I ship — you subscribe rather than fork. **[skills.sh](https://skills.sh/ericvdtoorn/skills)** copies editable skill files into your project, so you can hack on them and make them your own. Pick one — installing both leaves you with every skill twice.
+
+### 1. Get the skills
+
+<details>
+<summary><strong>Claude Code</strong></summary>
+
+```bash
+claude plugin marketplace add ericvdtoorn/skills
+claude plugin install evantoor-skills@evantoor
+```
+
+Or, from inside a session:
+
+```
+/plugin marketplace add ericvdtoorn/skills
+/plugin install evantoor-skills@evantoor
+```
+
+Once the marketplace is added, updates arrive automatically.
+
+</details>
+
+<details>
+<summary><strong>Codex, and other agents</strong></summary>
 
 ```bash
 npx skills@latest add ericvdtoorn/skills
 ```
 
-2. Pick the skills you want, and which coding agents you want to install them on. **Make sure you select `/setup-evantoor-skills`**.
+Pick the skills you want, and which coding agents to install them on. **The installer lets you choose which skills to take — make sure `setup-evantoor-skills` is one of them.**
 
-3. Run `/setup-evantoor-skills` in your agent. It will:
-   - Ask you which issue tracker you want to use (GitHub, Linear, or local files)
-   - Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
-   - Ask you where you want to save any docs we create
-   - Check for overlapping skills from other plugins (e.g. `superpowers`) and disable or deprioritise them locally so you don't get inconsistent behaviour across sessions
-   - Recommend which installed skills fit your project's stack — enabling relevant ones and disabling clearly-irrelevant ones (e.g. a Rust pack in a TypeScript repo)
+Every skill ships an `agents/openai.yaml`, so the set works in Codex today.
 
-4. Bam - you're ready to go.
+</details>
+
+<details>
+<summary><strong>For tinkerers</strong></summary>
+
+Use the same installer, on any agent — including Claude Code:
+
+```bash
+npx skills@latest add ericvdtoorn/skills
+```
+
+It writes the skills into your repo as ordinary files you own and can edit. Nothing updates behind your back; pull my latest changes when you want them with `npx skills update`.
+
+</details>
+
+### 2. Run `/setup-evantoor-skills`
+
+In your agent, run it once per repo. It will:
+
+- Ask you which issue tracker you want to use (GitHub, Linear, or local files)
+- Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
+- Ask you where you want to save any docs we create
+- Check for overlapping skills from other plugins (e.g. `superpowers`) and disable or deprioritise them locally so you don't get inconsistent behaviour across sessions
+- Recommend which installed skills fit your project's stack — enabling relevant ones and disabling clearly-irrelevant ones (e.g. a Rust pack in a TypeScript repo)
+
+### 3. Bam - you're ready to go.
 
 ## Why These Skills Exist
 

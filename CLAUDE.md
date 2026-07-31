@@ -11,6 +11,8 @@ Every skill in `engineering/`, `productivity/`, or `misc/` must have a reference
 
 `.claude-plugin/plugin.json`'s `skills` array ships exactly the **promoted** buckets — `engineering/` and `productivity/`. `misc/` skills are documented but not shipped.
 
+`.claude-plugin/marketplace.json` makes this repo its own single-plugin Claude Code marketplace, so users install with `/plugin marketplace add ericvdtoorn/skills` then `/plugin install evantoor-skills@evantoor`. The marketplace `name` (`evantoor`) is the `@`-suffix in that install command, and its plugin entry's `name` must match `plugin.json`'s `name`.
+
 Each skill entry in the top-level `README.md` must link the skill name to its `SKILL.md`.
 
 Each bucket folder has a `README.md` that lists every skill in the bucket with a one-line description, with the skill name linked to its `SKILL.md`.
