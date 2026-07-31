@@ -27,6 +27,8 @@ Use this template. Replace `<name>` and the body; keep the header and footer int
 #!/usr/bin/env bash
 #MISE description="<one-line summary shown in `mise tasks`>"
 #MISE alias="<optional short alias>"
+#USAGE flag "-f --force" help="<delete this line if the task takes no flags>"
+#USAGE arg "<name>" help="<delete this line if the task takes no positional args>"
 set -euo pipefail
 
 TASK_NAME="$(basename "$0" .sh)"
@@ -38,7 +40,7 @@ mkdir -p "$LOG_DIR"
 {
   # ---- task body starts here ----
 
-  echo "running $TASK_NAME"
+  echo "running $TASK_NAME on ${usage_name} (force=${usage_force:-false})"
   # e.g. bun test, uv run pytest, etc.
 
   # ---- task body ends here ----
@@ -50,6 +52,8 @@ echo "── log written to $LOG"
 echo "── tail with: tail -200 $LOG"
 ```
 
+Declare every flag and positional arg the task accepts with `#USAGE` (see the next section). Don't hand-parse `"$@"` for a task with a known interface — `#USAGE` gives you `--help`, validation, completions, and defaults for free.
+
 ### Why the tail block matters
 
 When an agent runs a task and the output gets truncated (by terminal scrollback or by Claude's tool-result cap), the last few lines survive. By forcing the log path into those lines, the agent always knows where the full output lives. No need to re-run with `2>&1 > somewhere.log` after the fact.
@@ -60,12 +64,52 @@ When an agent runs a task and the output gets truncated (by terminal scrollback 
 - **package.json scripts** — keep around if `bun run` workflows already exist, but prefer mise for new tasks. Mise can call bun scripts via `bun run …` inside a task body.
 - **Makefile** — avoid for new work in this convention.
 
+## Declaring args with `#USAGE`
+
+Tasks with a defined interface (a fixed set of flags / positional args) declare it with `#USAGE` directives in the header. mise parses them, validates input, generates `--help`, and injects each value as a `usage_<name>` env var into the task body. Prefer this over reading `"$@"` by hand — raw `"$@"` is only for pure passthrough wrappers (see below).
+
+```bash
+#USAGE flag "-f --force"                 help="Skip confirmation"
+#USAGE flag "-o --output <file>"         help="Where to write" default="out.txt"
+#USAGE arg  "<name>"                     help="Thing to build"
+#USAGE arg  "[environment]"              help="Optional positional" default="staging"
+```
+
+| Declaration | Reads as | Notes |
+|---|---|---|
+| `flag "-f --force"` | `${usage_force}` | boolean — `true` when passed, unset otherwise. Consume as `${usage_force:-false}` |
+| `flag "-o --output <file>"` | `${usage_output}` | flag that takes a value |
+| `arg "<name>"` | `${usage_name}` | required positional (angle brackets) — mise errors if omitted |
+| `arg "[environment]"` | `${usage_environment}` | optional positional (square brackets) |
+| `… default="x"` | — | supplies a value when the user omits it |
+| `… env="API_KEY"` | — | an exported env var can satisfy the arg, including required ones |
+
+The arg/flag name comes from the long form: `--output` → `usage_output`, `--dry-run` → `usage_dry_run` (dashes become underscores).
+
+Invoke a declared task with flags inline — no `--` separator needed:
+
+```bash
+mise run build widget --force --output dist/widget.js
+mise run build --help          # auto-generated from the #USAGE lines
+```
+
+### When raw `"$@"` is still right
+
+Pure passthrough wrappers — where the task forwards every argument verbatim to one underlying tool and adds no interface of its own — keep `"$@"` and skip `#USAGE`. The wrapped tool owns the arg parsing:
+
+```bash
+bun test "$@"      # forwards filters, --watch, etc. straight to bun
+uv run pytest "$@" # forwards -k, -x, paths straight to pytest
+```
+
 ## Invoking a task
 
 ```bash
 mise tasks                   # list all tasks (including description + alias)
 mise run <name>              # run a task by name or alias
-mise run <name> -- --flag x  # forward args after `--`
+mise run <name> --force x    # pass declared #USAGE flags/args inline (no `--`)
+mise run <name> -- --flag x  # forward raw args after `--` to a "$@" passthrough task
+mise run <name> --help       # show the auto-generated usage for a declared task
 mise exec -- <cmd>           # run an ad-hoc command in the mise env (no task)
 ```
 
@@ -80,6 +124,8 @@ If you need the whole log, read it with the `Read` tool (don't `cat` it through 
 ## Common patterns
 
 ### Task that runs JS via bun
+
+Pure passthrough wrapper — `"$@"` forwards everything to `bun test`, so no `#USAGE` (see [When raw `"$@"` is still right](#when-raw--is-still-right)).
 
 ```bash
 #!/usr/bin/env bash
@@ -121,6 +167,40 @@ TASK_NAME="$(basename "$0" .sh)"; LOG="${MISE_PROJECT_ROOT:-$PWD}/mise/logs/$TAS
 mkdir -p "$(dirname "$LOG")"
 echo "all checks passed" | tee "$LOG"
 echo; echo "── log written to $LOG"; echo "── tail with: tail -200 $LOG"
+```
+
+### Task with a declared `#USAGE` interface
+
+A `deploy` task with a required positional, an optional defaulted positional, and a boolean flag. Note the args are consumed via `usage_*`, not `"$@"`:
+
+```bash
+#!/usr/bin/env bash
+#MISE description="deploy a service to an environment"
+#USAGE arg  "<service>"        help="Service to deploy"
+#USAGE arg  "[environment]"    help="Target environment" default="staging"
+#USAGE flag "-n --dry-run"     help="Print the plan without applying"
+set -euo pipefail
+TASK_NAME="$(basename "$0" .sh)"; LOG="${MISE_PROJECT_ROOT:-$PWD}/mise/logs/$TASK_NAME.log"
+mkdir -p "$(dirname "$LOG")"
+{
+  if [[ "${usage_dry_run:-false}" == "true" ]]; then
+    echo "DRY RUN: would deploy $usage_service to $usage_environment"
+  else
+    echo "deploying $usage_service to $usage_environment"
+    # e.g. flyctl deploy --app "$usage_service" ...
+  fi
+} 2>&1 | tee "$LOG"
+echo; echo "── log written to $LOG"; echo "── tail with: tail -200 $LOG"
+```
+
+Invoke it:
+
+```bash
+mise run deploy api                  # environment defaults to staging
+mise run deploy api production       # positional environment
+mise run deploy api production -n    # dry run
+mise run deploy --help               # usage generated from the #USAGE lines
+mise run deploy                      # errors: <service> is required
 ```
 
 ## When to deviate
